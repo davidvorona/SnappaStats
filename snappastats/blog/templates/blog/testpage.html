@@ -17,6 +17,8 @@
         <label for="viewdates">View Dates: </label>
         <input id="viewdates" type="checkbox" ng-model="viewdates"/>
 
+        <p ng-bind="testdata"></p>
+
         <div ng-repeat="entry in entries" ng-cloak>
             <hr>
             <h3>{{ entry.title }}<span ng-if="viewdates"> ({{ entry.date_published }})</span></h3>
@@ -32,7 +34,7 @@
 <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
 <script>
     angular.module('blog.testpage', [])
-            .controller('blog.testpage.controller', ['$scope', function ($scope) {
+            .controller('blog.testpage.controller', ['$scope', '$http', function ($scope, $http) {
                 $scope.entries = [];
                 {% for entry in entries %}
                     $scope.entries.push({
@@ -41,6 +43,10 @@
                         date_published: '{{ entry.date_published }}'
                     });
                 {% endfor %}
+
+                $http.get('/api/v1/get/user/1/').then( function (response) {
+                    $scope.testdata = response.data.firstname;
+                });
             }]);
 </script>
 </body>
