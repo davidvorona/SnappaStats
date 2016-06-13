@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page - Snappa Stats</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/ngcloak.css' %}">
+</head>
+<body ng-app="blog.testpage">
+{% verbatim %}
+
+    <h1>
+        Snappa Stats Blog
+    </h1>
+
+    <div ng-controller="blog.testpage.controller">
+        <label for="viewdates">View Dates: </label>
+        <input id="viewdates" type="checkbox" ng-model="viewdates"/>
+
+        <div ng-repeat="entry in entries" ng-cloak>
+            <hr>
+            <h3>{{ entry.title }}<span ng-if="viewdates"> ({{ entry.date_published }})</span></h3>
+            <p>{{ entry.body }}</p>
+        </div>
+
+        <hr>
+        <a href="/admin">Admin Site</a>
+    </div>
+
+{% endverbatim %}
+<script type="text/javascript" src="{% static 'js/angular.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+<script>
+    angular.module('blog.testpage', [])
+            .controller('blog.testpage.controller', ['$scope', function ($scope) {
+                $scope.entries = [];
+                {% for entry in entries %}
+                    $scope.entries.push({
+                        title: '{{ entry.title }}',
+                        body: '{{ entry.body }}',
+                        date_published: '{{ entry.date_published }}'
+                    });
+                {% endfor %}
+            }]);
+</script>
+</body>
+</html>
