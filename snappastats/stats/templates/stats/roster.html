@@ -4,4 +4,46 @@
 
 {% block current_tab %}Roster{% endblock %}
 
-{% block body %}This is the roster{% endblock %}
+{% block body %}
+    {% verbatim %}
+        <div ng-app="rosterApp" ng-controller="RosterController">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Roster page test test
+                </div>
+                <div class="panel-body" ng-cloak>
+
+                    <div class="media" ng-repeat="profile in profiles | orderBy:'lastname'">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object" src="http://www.realcommercial.com.au/building/assets/images/avatar_placeholder.png">
+                            </a>
+                      </div>
+                      <div class="media-body">
+                          <h4 class="media-heading">{{ profile.firstname }} {{ profile.lastname }}</h4>
+                          Info in heading. Mr {{ profile.lastname }} can't catch.
+                      </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    {% endverbatim %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        angular.module('rosterApp', [])
+                .controller('RosterController', ['$scope', '$http', function ($scope, $http) {
+                    // Get profile info
+                    $http({
+                        method: 'GET',
+                        url: '/api/v1/get/profiles/'
+                    }).then(function (response) {
+                        $scope.profiles = response.data;
+                    });
+                }]);
+    </script>
+{% endblock %}
