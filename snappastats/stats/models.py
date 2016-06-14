@@ -1,9 +1,25 @@
 from django.db import models
 
 
+# Helper methods
+
+
+def get_avatar_path(instance, filename):
+    return 'avatars/{}.png'.format(instance.pk)
+
+
+# Models
+
+
 class Profile(models.Model):
-    firstname = models.CharField(max_length=20)
-    lastname = models.CharField(max_length=20)
+    firstname = models.CharField(max_length=20, default='')
+    lastname = models.CharField(max_length=20, default='')
+    avatar = models.FileField(upload_to=get_avatar_path, blank=True)
+    hometown = models.CharField(max_length=40, default='')
+    description = models.TextField(max_length=500, default='')
+
+    # Computed fields (must be redigested upon db change)
+    # TODO make these
 
     def __str__(self):
         return '{} {}'.format(self.firstname, self.lastname)
