@@ -8,13 +8,13 @@
     {% verbatim %}
         <div ng-app="profilesApp" ng-controller="ProfilesController" ng-cloak>
 
-        <!-- Profile box 1 -->
+        <!-- Profile box 1 (index 0) -->
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="input-group">
-                            <span class="input-group-addon" id="profile-1-desc">Profile 1</span>
-                            <input type="text" class="form-control" ng-model="nameQuery1" placeholder="Name" aria-describedby="profile-1-desc">
+                            <span class="input-group-addon" id="profile-0-desc">Profile {{ 0 + 1 }}</span>
+                            <input type="text" class="form-control" ng-model="nameQuery0" placeholder="Name" aria-describedby="profile-0-desc">
                         </div>
                     </div>
                     <div class="panel-body">
@@ -89,6 +89,87 @@
                 </div>
             </div>
 
+        <!-- Profile box 2 (index 1) -->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="profile-1-desc">Profile {{ 1 + 1 }}</span>
+                            <input type="text" class="form-control" ng-model="nameQuery1" placeholder="Name" aria-describedby="profile-1-desc">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="profiles[1]">
+                            <div class="container">
+                                <!-- Personal info -->
+                                <div class="row" style="min-height: 12em;">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img class="img-circle" height="128px" width="128px" src="/media/avatars/{{ profiles[1].id }}.png">
+                                        </div>
+                                        <div class="media-body">
+                                            <div class="col-md-4">
+                                                <h4 class="media-heading">{{ profiles[1].firstname }} {{ profiles[1].lastname }}</h4>
+                                                <strong>{{ profiles[1].hometown }}:</strong> {{ profiles[1].description }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <!-- List stats -->
+                                <div class="row col-md-5">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    Tracked Games<br> <span class="badge" ng-bind="profiles[1].games"></span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    Career Points<br> <span class="badge" ng-bind="profiles[1].points"></span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    Career Sinks<br> <span class="badge" ng-bind="profiles[1].sinks"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Throwing Score:
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ profiles[1].throwing }}"
+                                                     aria-valuemin="0" aria-valuemax="100" style="width: {{ profiles[1].throwing }}%;"
+                                                     ng-bind="profiles[1].throwing"></div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Catching Score:
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ profiles[1].catching }}"
+                                                     aria-valuemin="0" aria-valuemax="100" style="width: {{ profiles[1].catching }}%;"
+                                                     ng-bind="profiles[1].catching"></div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            Toss Breakdown: (Points / Normal / Misses)
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-success" role="progressbar"
+                                                     style="width: {{ profiles[1].breakdown.points }}%;" ng-bind="profiles[1].breakdown.points"></div>
+                                                <div class="progress-bar progress-bar-warning" role="progressbar"
+                                                     style="width: {{ profiles[1].breakdown.normal }}%;" ng-bind="profiles[1].breakdown.normal"></div>
+                                                <div class="progress-bar progress-bar-danger" role="progressbar"
+                                                     style="width: {{ profiles[1].breakdown.misses }}%;" ng-bind="profiles[1].breakdown.misses"></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="!profiles[1]">
+                            No user selected yet...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     {% endverbatim %}
@@ -109,21 +190,31 @@
 
                     // Initialize player data
                     $scope.profiles = [undefined, undefined];
+                    $scope.nameQuery0 = '';
                     $scope.nameQuery1 = '';
-                    $scope.nameQuery2 = '';
 
                     // Apply listeners to the search bars
-                    $scope.$watch('nameQuery1', function (value) {
-                        value = value.toLowerCase();
-                        if ($scope.names.hasOwnProperty(value)) {
-                            $http({
-                                method: 'GET',
-                                url: '/api/v1/get/profile/' + $scope.names[value]
-                            }).then(function (response) {
-                                $scope.profiles[0] = response.data;
-                            });
-                        }
-                    });
+                    var createProfileFetcher = function (paneIndex) {
+                        return function (value) {
+                            if (value === '' || !value) {
+                                $scope.profiles[paneIndex] = undefined;
+                            } else {
+                                value = value.toLowerCase();
+                                if ($scope.names.hasOwnProperty(value)) {
+                                    $http({
+                                        method: 'GET',
+                                        url: '/api/v1/get/profile/' + $scope.names[value]
+                                    }).then(function (response) {
+                                        $scope.profiles[paneIndex] = response.data;
+                                    });
+                                }
+                            }
+                        };
+                    };
+                    $scope.$watch('nameQuery0', createProfileFetcher(0));
+                    $scope.$watch('nameQuery1', createProfileFetcher(1));
+
+
                 }]);
     </script>
 {% endblock %}
