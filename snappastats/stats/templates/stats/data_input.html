@@ -1,0 +1,160 @@
+{% extends 'stats/master.html' %}
+{% load staticfiles %}
+
+{% block title %}Data Input{% endblock %}
+
+{% block current_tab %}Data Input{% endblock %}
+
+{% block body %}
+    {% verbatim %}
+        <div ng-app="inputApp" ng-controller="InputController" ng-cloak>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Enter a new game
+                </div>
+
+                <div class="panel-body">
+                    <div class="alert alert-danger" ng-show="!validation.date">
+                        <strong>Validation:</strong>
+                        Please enter a valid date!
+                    </div>
+                    <label>
+                        Game Date:
+                        <input type="date" ng-model="postData.date" ng-change="validateDate()">
+                    </label>
+                    <hr>
+
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Role</th>
+                                <th class="col-md-2">Full Name</th>
+                                <th class="col-md-1" ng-repeat="metric in numericMetrics">{{ metric }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="i in teamIteration">
+                                <td>Team {{ i.team + 1}}, player {{ i.player + 1}}</td>
+                                <td ng-class="{success: validation.teams[i.team].players[i.player].fullname}">
+                                    <input type="text" ng-model="postData.teams[i.team].players[i.player].fullname"
+                                        ng-change="validateName(i.team, i.player)">
+                                </td>
+                                <td ng-repeat="metric in numericMetrics" ng-class="{success: validation.teams[i.team].players[i.player][metric]}">
+                                    <input type="text" size="5" maxlength="3" ng-model="postData.teams[i.team].players[i.player][metric]"
+                                        ng-change="validateNumber(i.team, i.player, metric)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr>
+
+                    <button class="btn btn-success" ng-show="isValidForm() && !postDataSuccess && !dataSent" ng-click="postGame()">Register Game</button>
+                    <div class="alert alert-success" ng-show="postDataSuccess && dataSent">
+                        <strong>Success!</strong>
+                        Game successfully registered
+                    </div>
+                    <div class="alert alert-info" ng-show="!postDataSuccess && dataSent">
+                        <strong>Waiting...</strong>
+                        Registering game
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% endverbatim %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        angular.module('inputApp', [])
+            .controller('InputController', ['$scope', '$http', function ($scope, $http) {
+                // Iteration data
+                $scope.teamIteration = [
+                    {team: 0, player: 0},
+                    {team: 0, player: 1},
+                    {team: 1, player: 0},
+                    {team: 1, player: 1}
+                ];
+                $scope.numericMetrics = ['shots', 'points', 'misses', 'scorable', 'sinks', 'catches'];
+
+                // Get name data
+                $http({
+                    method: 'GET',
+                    url: '/api/v1/get/names_dict/'
+                }).then(function (response) {
+                    $scope.names = response.data;
+                });
+
+                // Post data
+                $scope.postData = {
+                    date: undefined,
+                    teams: [{
+                            players: [{}, {}]}, {
+                            players: [{}, {}]}
+                    ]
+                };
+
+                // Data validation
+                $scope.validation = {
+                    date: undefined,
+                    teams: [{
+                            players: [{}, {}]}, {
+                            players: [{}, {}]}
+                    ]
+                };
+                $scope.validateDate = function () {
+                    $scope.validation.date = isFinite(new Date($scope.postData.date).getYear());
+                };
+                $scope.validateName = function(team, player) {
+                    var value = $scope.postData.teams[team].players[player].fullname.trim().toLowerCase();
+                    $scope.validation.teams[team].players[player].fullname = $scope.names.hasOwnProperty(value);
+                    $scope.postData.teams[team].players[player].id = $scope.names[value];
+                };
+                $scope.validateNumber = function(team, player, metric) {
+                    var value = parseInt($scope.postData.teams[team].players[player][metric]);
+                    $scope.validation.teams[team].players[player][metric] = (typeof value === 'number' && value >= 0);
+                };
+                $scope.isValidForm = function () {
+                    if (!$scope.validation.date) {
+                        return false;
+                    }
+                    var i, ind, m, metric;
+                    for (i in $scope.teamIteration) {
+                        if ($scope.teamIteration.hasOwnProperty(i)){
+                            ind = $scope.teamIteration[i];
+                            if (!$scope.validation.teams[ind.team].players[ind.player].fullname) {
+                                return false;
+                            }
+                            for (m in $scope.numericMetrics) {
+                                if ($scope.numericMetrics.hasOwnProperty(m)) {
+                                    metric = $scope.numericMetrics[m];
+                                    if (!$scope.validation.teams[ind.team].players[ind.player][metric]) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return true;
+                };
+
+                // Send POST data to register game
+                $scope.dataSent = false;
+                $scope.postDataSuccess = false;
+                $scope.errorMessage = '';
+                $scope.postGame = function () {
+                    $scope.dataSent = true;
+                    $http({
+                        method: 'POST',
+                        url: '/api/v1/add/game/',
+                        data: {
+                            data: $scope.postData
+                        }
+                    }).then(function (response) {
+                        $scope.postDataSuccess = true;
+                    });
+                };
+            }]);
+    </script>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 
 def testpage(request):
@@ -15,3 +16,9 @@ def roster(request):
 
 def profiles(request):
     return render(request, 'stats/profiles.html')
+
+
+@login_required
+def data_input(request):
+    return render(request, 'stats/data_input.html')
+

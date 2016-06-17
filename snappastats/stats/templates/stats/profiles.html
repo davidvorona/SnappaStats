@@ -196,18 +196,14 @@
                     // Apply listeners to the search bars
                     var createProfileFetcher = function (paneIndex) {
                         return function (value) {
-                            if (value === '' || !value) {
-                                $scope.profiles[paneIndex] = undefined;
-                            } else {
-                                value = value.toLowerCase();
-                                if ($scope.names.hasOwnProperty(value)) {
-                                    $http({
-                                        method: 'GET',
-                                        url: '/api/v1/get/profile/' + $scope.names[value]
-                                    }).then(function (response) {
-                                        $scope.profiles[paneIndex] = response.data;
-                                    });
-                                }
+                            value = value.toLowerCase();
+                            if ($scope.names.hasOwnProperty(value)) {
+                                $http({
+                                    method: 'GET',
+                                    url: '/api/v1/get/profile/' + $scope.names[value]
+                                }).then(function (response) {
+                                    $scope.profiles[paneIndex] = response.data;
+                                });
                             }
                         };
                     };
