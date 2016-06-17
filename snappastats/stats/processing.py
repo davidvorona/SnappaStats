@@ -74,12 +74,10 @@ def digest(profile_id):
     profile = Profile.objects.get(pk=profile_id)
     digested_stats = profile.digested_stats
     if not digested_stats:
-        print('Creating new stats for {}'.format(profile))
         digested_stats = DigestedStats()
         digested_stats.save()
         profile.digested_stats = digested_stats
         profile.save()
-    print('it is now {}'.format(profile))
     stats = {
         'games': 0,
         'points': 0,

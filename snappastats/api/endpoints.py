@@ -33,9 +33,9 @@ def get_profiles(request):
 
 def get_profile(request, profile_id):
     profile = Profile.objects.get(pk=profile_id)
-    points_normalized = round(profile.digested_stats.points * 100 / profile.digested_stats.shots)
+    scorable_normalized = round(profile.digested_stats.scorable * 100 / profile.digested_stats.shots)
     misses_normalized = round(profile.digested_stats.misses * 100 / profile.digested_stats.shots)
-    normal_normalized = 100 - points_normalized - misses_normalized
+    normal_normalized = 100 - scorable_normalized - misses_normalized
     response_payload = {
         'firstname': profile.firstname,
         'lastname': profile.lastname,
@@ -48,7 +48,7 @@ def get_profile(request, profile_id):
         'throwing': profile.digested_stats.throwing_score,
         'catching': profile.digested_stats.catching_score,
         'breakdown': {
-            'points': points_normalized,
+            'scorable': scorable_normalized,
             'normal': normal_normalized,
             'misses': misses_normalized,
         },
@@ -71,6 +71,12 @@ def get_names_dict(request):
 def digest_profile(request, profile_id):
     digest(profile_id)
     return HttpResponse(200)
+
+
+def digest_all(request, profile_id):
+    profiles = Profile.objects.all()
+    for profile in profiles:
+        digest(profile.pk)
 
 
 @csrf_exempt
