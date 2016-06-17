@@ -35,7 +35,7 @@ class DigestedStats(models.Model):
     catching_score = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return '[{}] throwing: {}, catching: {}'.format(self.profile.firstname, self.throwing_score, self.catching_score)
+        return 'throwing: {}, catching: {}'.format(self.throwing_score, self.catching_score)
 
 
 class Game(models.Model):
