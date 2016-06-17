@@ -1,3 +1,7 @@
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os
+
 from django.db import models
 
 
@@ -6,6 +10,14 @@ from django.db import models
 
 def get_avatar_path(instance, filename):
     return 'avatars/{}.png'.format(instance.pk)
+
+
+class OverwriteStorage(FileSystemStorage):
+    def get_available_name(self, name, maxlength=20):
+        # If the filename already exists, remove it as if it was a true file system
+        if self.exists(name):
+            os.remove(os.path.join(settings.MEDIA_ROOT, name))
+        return name
 
 
 # Models
@@ -17,7 +29,9 @@ class Profile(models.Model):
     avatar = models.FileField(upload_to=get_avatar_path, blank=True)
     hometown = models.CharField(max_length=40, default='')
     description = models.TextField(max_length=500, default='')
-    digested_stats = models.OneToOneField('DigestedStats', null=True, related_name='profile')
+    digested_stats = models.OneToOneField('DigestedStats',
+                                          null=True, related_name='profile',
+                                          storage=OverwriteStorage())
 
     def __str__(self):
         return '{} {}'.format(self.firstname, self.lastname)
