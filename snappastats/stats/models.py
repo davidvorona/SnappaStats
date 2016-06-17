@@ -1,6 +1,13 @@
 from django.db import models
 
 
+# Helper methods
+
+
+def get_avatar_path(instance, filename):
+    return 'avatars/{}.png'.format(instance.pk)
+
+
 # Models
 
 
