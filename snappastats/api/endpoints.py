@@ -77,6 +77,7 @@ def digest_all(request):
     profiles = Profile.objects.all()
     for profile in profiles:
         digest(profile.pk)
+    return HttpResponse(200)
 
 
 @csrf_exempt
