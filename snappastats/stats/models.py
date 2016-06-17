@@ -31,7 +31,7 @@ class Profile(models.Model):
     description = models.TextField(max_length=500, default='')
     digested_stats = models.OneToOneField('DigestedStats',
                                           null=True, related_name='profile',
-                                          storage=OverwriteStorage())
+                                          storage=OverwriteStorage)
 
     def __str__(self):
         return '{} {}'.format(self.firstname, self.lastname)
