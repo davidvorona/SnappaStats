@@ -73,7 +73,7 @@ def digest_profile(request, profile_id):
     return HttpResponse(200)
 
 
-def digest_all(request, profile_id):
+def digest_all(request):
     profiles = Profile.objects.all()
     for profile in profiles:
         digest(profile.pk)
