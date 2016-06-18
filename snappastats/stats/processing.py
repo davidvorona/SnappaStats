@@ -112,7 +112,7 @@ def digest(profile_id):
     digested_stats.scorable = stats['scorable']
     # Throwing score
     denom = stats['shots']
-    numerator = ((3 * stats['points']) + stats['scorable'] + (.5 * stats['normal'])) * 100
+    numerator = (stats['points'] + stats['scorable'] + (.5 * stats['normal'])) * 100
     throwing_before_clamp = 0 if not denom else round(numerator / denom)
     digested_stats.throwing_score = throwing_before_clamp if throwing_before_clamp <= 100 else 100
     # Catching score
