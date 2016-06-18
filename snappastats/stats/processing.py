@@ -101,6 +101,7 @@ def digest(profile_id):
         stats['catches'] += player.catches
         stats['partner_catches'] += player.partner.catches
         stats['opponent_scorable'] += player.team.opposing_team.get_combined('scorable')
+    stats['normal'] = stats['shots'] - stats['scorable'] - stats['misses']  # normal = non-scorable tables and lows
 
     # Assign values to stats
     digested_stats.games = stats['games']
@@ -109,8 +110,12 @@ def digest(profile_id):
     digested_stats.shots = stats['shots']
     digested_stats.misses = stats['misses']
     digested_stats.scorable = stats['scorable']
+    # Throwing score
     denom = stats['shots']
-    digested_stats.throwing_score = 0 if not denom else round(stats['scorable'] * 100 / denom)
+    numerator = (3 * stats['points']) + stats['scorable'] + (.5 * stats['normal']) * 100
+    throwing_before_clamp = 0 if not denom else round(numerator / denom)
+    digested_stats.throwing_score = throwing_before_clamp if throwing_before_clamp <= 100 else 100
+    # Catching score
     denom = stats['opponent_scorable'] - stats['partner_catches']
     digested_stats.catching_score = 0 if not denom else round(stats['catches'] * 100 / denom)
     digested_stats.save()
