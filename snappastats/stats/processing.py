@@ -97,7 +97,7 @@ def digest(profile_id):
         stats['sinks'] += player.sinks
         stats['shots'] += player.shots
         stats['misses'] += player.misses
-        stats['scorable'] += player.misses
+        stats['scorable'] += player.scorable
         stats['catches'] += player.catches
         stats['partner_catches'] += player.partner.catches
         stats['opponent_scorable'] += player.team.opposing_team.get_combined('scorable')
