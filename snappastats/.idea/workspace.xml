@@ -95,8 +95,8 @@
       <file leaf-file-name="processing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/stats/processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
-              <caret line="103" column="115" selection-start-line="103" selection-start-column="115" selection-end-line="103" selection-end-column="115" />
+            <state relative-caret-position="725">
+              <caret line="113" column="26" selection-start-line="113" selection-start-column="26" selection-end-line="113" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -1027,8 +1027,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/stats/processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="103" column="115" selection-start-line="103" selection-start-column="115" selection-end-line="103" selection-end-column="115" />
+        <state relative-caret-position="725">
+          <caret line="113" column="26" selection-start-line="113" selection-start-column="26" selection-end-line="113" selection-end-column="26" />
           <folding />
         </state>
       </provider>
