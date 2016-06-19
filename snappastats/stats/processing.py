@@ -88,7 +88,7 @@ def digest(profile_id):
         'catches': 0,
         'partner_catches': 0,
         'opponent_scorable': 0,
-        # 'common_teammates': {}
+        'teammates': {}
     }
 
     # Collect total measurements
@@ -102,11 +102,11 @@ def digest(profile_id):
         stats['catches'] += player.catches
         stats['partner_catches'] += player.partner.catches
         stats['opponent_scorable'] += player.team.opposing_team.get_combined('scorable')
-        # partner_name = player.get_fullname()
-        # if stats['common_teammates'][partner_name]:
-        #     stats['common_teammates'][partner_name] += 1
-        # else:
-        #     stats['common_teammates'][partner_name] = 1
+        partner_name = player.partner.get_fullname()
+        if partner_name in stats['teammates']:
+            stats['teammates'][partner_name] += 1
+        else:
+            stats['teammates'][partner_name] = 1
     stats['normal'] = stats['shots'] - stats['scorable'] - stats['misses']  # normal = non-scorable tables and lows
 
     # Assign values to stats
@@ -116,8 +116,10 @@ def digest(profile_id):
     digested_stats.shots = stats['shots']
     digested_stats.misses = stats['misses']
     digested_stats.scorable = stats['scorable']
-    # digested_stats.common_teammates = max(stats['common_teammates'], key=lambda key: stats['common_teammates'][key])
-    digested_stats.common_teammates = 'test'
+    # Most common teammates
+    max_partner = max(stats['teammates'], key=lambda k: stats['teammates'][k])
+    digested_stats.common_teammates = \
+        ', '.join([k for k in stats['teammates'] if stats['teammates'][k] == stats['teammates'][max_partner]])
     # Throwing score
     denom = stats['shots']
     numerator = (stats['points'] + stats['scorable'] + (.5 * stats['normal'])) * 100

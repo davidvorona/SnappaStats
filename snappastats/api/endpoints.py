@@ -70,14 +70,12 @@ def get_names_dict(request):
 
 
 def digest_profile(request, profile_id):
-    digest(profile_id)
-    return HttpResponse(200)
-
-
-def digest_all(request):
-    profiles = Profile.objects.all()
-    for profile in profiles:
-        digest(profile.pk)
+    if profile_id == 'all':
+        profiles = Profile.objects.all()
+        for profile in profiles:
+            digest(profile.pk)
+    else:
+        digest(profile_id)
     return HttpResponse(200)
 
 
