@@ -79,8 +79,9 @@
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            Most Common Partners:
-                                            <span class="label label-default" ng-repeat="teammateName in profiles[0].teammates.split(', ')">
+                                            Most Common Partner(s):
+                                            <span class="label label-default" ng-class="{'label-primary': $even, 'label-info': $odd}"
+                                                  ng-repeat="teammateName in profiles[0].teammates.split(', ')">
                                                 {{ teammateName }}
                                             </span>
                                         </li>
@@ -166,8 +167,9 @@
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            Most Common Partners:
-                                            <span class="label label-default" ng-repeat="teammateName in profiles[1].teammates.split(', ')">
+                                            Most Common Partner(s):
+                                            <span class="label label-default" ng-class="{'label-primary': $even, 'label-info': $odd}"
+                                                  ng-repeat="teammateName in profiles[1].teammates.split(', ')">
                                                 {{ teammateName }}
                                             </span>
                                         </li>
