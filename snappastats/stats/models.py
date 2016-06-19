@@ -34,7 +34,7 @@ class DigestedStats(models.Model):
     throwing_score = models.PositiveSmallIntegerField(default=0)
     catching_score = models.PositiveSmallIntegerField(default=0)
 
-    # common_teammates = models.CharField(max_length=80, default='')
+    common_teammates = models.CharField(max_length=80, default='')
 
     def __str__(self):
         return 'throwing: {}, catching: {}'.format(self.throwing_score, self.catching_score)
@@ -74,12 +74,6 @@ class Player(models.Model):
     scorable = models.PositiveIntegerField(default=0)
     catches = models.PositiveIntegerField(default=0)
     sinks = models.PositiveIntegerField(default=0)
-
-    def get_throwing_score(self):
-        return self.scorable / self.shots
-
-    def get_catching_score(self):
-        return self.catches / self.team.opposing_team.get_combined('scorable')
 
     def get_fullname(self):
         return '{} {}'.format(self.profile.firstname, self.profile.lastname)

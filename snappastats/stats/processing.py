@@ -117,6 +117,7 @@ def digest(profile_id):
     digested_stats.misses = stats['misses']
     digested_stats.scorable = stats['scorable']
     # digested_stats.common_teammates = max(stats['common_teammates'], key=lambda key: stats['common_teammates'][key])
+    digested_stats.common_teammates = 'test'
     # Throwing score
     denom = stats['shots']
     numerator = (stats['points'] + stats['scorable'] + (.5 * stats['normal'])) * 100
