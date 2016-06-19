@@ -52,7 +52,7 @@ def get_profile(request, profile_id):
             'normal': normal_normalized,
             'misses': misses_normalized,
         },
-        'teammates': profile.digested_stats.common_teammates,
+        # 'teammates': profile.digested_stats.common_teammates,
     }
     return HttpResponse(json.dumps(response_payload), content_type='application/json')
 

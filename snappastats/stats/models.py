@@ -34,7 +34,7 @@ class DigestedStats(models.Model):
     throwing_score = models.PositiveSmallIntegerField(default=0)
     catching_score = models.PositiveSmallIntegerField(default=0)
 
-    common_teammates = models.CharField(max_length=80, default='')
+    # common_teammates = models.CharField(max_length=80, default='')
 
     def __str__(self):
         return 'throwing: {}, catching: {}'.format(self.throwing_score, self.catching_score)
