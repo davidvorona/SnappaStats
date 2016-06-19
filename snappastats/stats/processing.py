@@ -117,9 +117,12 @@ def digest(profile_id):
     digested_stats.misses = stats['misses']
     digested_stats.scorable = stats['scorable']
     # Most common teammates
-    max_partner = max(stats['teammates'], key=lambda k: stats['teammates'][k])
-    digested_stats.common_teammates = \
-        ', '.join([k for k in stats['teammates'] if stats['teammates'][k] == stats['teammates'][max_partner]])
+    if len(stats['teammates']) > 0:
+        max_partner = max(stats['teammates'], key=lambda k: stats['teammates'][k])
+        digested_stats.common_teammates = \
+            ', '.join([k for k in stats['teammates'] if stats['teammates'][k] == stats['teammates'][max_partner]])
+    else:
+        digested_stats.common_teammates = 'None'
     # Throwing score
     denom = stats['shots']
     numerator = (stats['points'] + stats['scorable'] + (.5 * stats['normal'])) * 100
